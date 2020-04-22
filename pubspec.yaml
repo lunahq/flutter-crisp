@@ -1,0 +1,21 @@
+name: crisp
+description: A new flutter plugin project.
+version: 0.0.1
+author:
+homepage:
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  webview_flutter: ^0.3.20+2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+  plugin:
+    androidPackage: com.oiluna.crisp
+    pluginClass: CrispPlugin
