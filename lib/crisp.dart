@@ -1,9 +1,10 @@
-import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 class CrispUser {
   final String email;
@@ -57,65 +58,87 @@ class _CrispMain {
 final crisp = _CrispMain();
 
 class CrispView extends StatefulWidget {
+  final Widget loadingWidget;
+  final AppBar appBar;
+
   @override
   _CrispViewState createState() => _CrispViewState();
+
+  CrispView({this.loadingWidget, this.appBar});
 }
 
 class _CrispViewState extends State<CrispView> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  final flutterWebViewPlugin = FlutterWebviewPlugin();
 
-  WebViewController _webViewController;
+  handleAppLifecycleState() {
+    SystemChannels.lifecycle.setMessageHandler((msg) {
+      if (msg == "AppLifecycleState.resumed") {
+        flutterWebViewPlugin.reloadUrl(
+            'https://go.crisp.chat/chat/embed/?website_id=${crisp.websiteId}');
+      }
+      return null;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    handleAppLifecycleState();
+
+    final javascriptString = """var a = setInterval(function(){
+      if (typeof \$crisp !== 'undefined'){  
+      ${crisp.commands.join(';')}
+      clearInterval(a)
+      } else {
+      console.log('no')
+      }
+      },500)""";
+
+    crisp.commands.clear();
+    flutterWebViewPlugin.evalJavascript(javascriptString);
+
+    flutterWebViewPlugin.onStateChanged.listen((
+      WebViewStateChanged state,
+    ) async {
+      if (state.type == WebViewState.shouldStart) {
+        if (state.url.contains('https://go.crisp.chat')) return;
+
+        print("navigating to...${state.url}");
+        if (state.url.startsWith("mailto") ||
+            state.url.startsWith("tel") ||
+            state.url.startsWith("http") ||
+            state.url.startsWith("https")) {
+          await flutterWebViewPlugin.stopLoading();
+
+          if (await canLaunch(state.url)) {
+            await launch(state.url);
+            return;
+          }
+          print("couldn't launch $state.url");
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    flutterWebViewPlugin.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return WebView(
-      initialUrl:
-          'https://go.crisp.chat/chat/embed/?website_id=${crisp.websiteId}',
-      javascriptMode: JavascriptMode.unrestricted,
-      onWebViewCreated: (WebViewController webViewController) {
-        _webViewController = webViewController;
-        _controller.complete(webViewController);
-      },
-      // ignore: prefer_collection_literals
-      javascriptChannels: <JavascriptChannel>[
-        _toasterJavascriptChannel(context),
-      ].toSet(),
-      navigationDelegate: (NavigationRequest request) {
-        if (request.url.contains('mailto:') ||
-            request.url.contains('https://') ||
-            request.url.contains('http://')) {
-          launch(request.url);
-
-          return NavigationDecision.prevent;
-        }
-        print('allowing navigation to $request');
-        return NavigationDecision.navigate;
-      },
-      onPageStarted: (String url) {
-        print('Page started loading: $url');
-      },
-      onPageFinished: (String url) async {
-        // await Future.delayed(Duration(seconds: 5));
-        crisp.commands.forEach((javascriptString) {
-          _webViewController.evaluateJavascript(javascriptString);
-        });
-
-        crisp.commands.clear();
-
-        print('Page finished loading: $url');
-      },
-      gestureNavigationEnabled: true,
+    return WebviewScaffold(
+      url: 'https://go.crisp.chat/chat/embed/?website_id=${crisp.websiteId}',
+      mediaPlaybackRequiresUserGesture: false,
+      appBar: widget.appBar,
+      withZoom: true,
+      withLocalStorage: true,
+      hidden: true,
+      initialChild: widget.loadingWidget,
+      withJavascript: true,
+      resizeToAvoidBottomInset: true,
     );
-  }
-
-  JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
-    return JavascriptChannel(
-        name: 'Toaster',
-        onMessageReceived: (JavascriptMessage message) {
-          Scaffold.of(context).showSnackBar(
-            SnackBar(content: Text(message.message)),
-          );
-        });
   }
 }

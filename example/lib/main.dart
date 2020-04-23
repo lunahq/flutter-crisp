@@ -13,7 +13,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    crisp.initialize('11385bfa-3cf8-4a0f-beba-44629aec6779');
+    crisp.initialize('UUID');
     crisp.register(
       CrispUser(
         email: "fala@oiluna.com",
@@ -29,9 +29,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: CrispView(),
-        appBar: AppBar(),
+      home: CrispView(
+        appBar: AppBar(
+          title: const Text('Widget WebView'),
+        ),
+        loadingWidget: Center(
+          child: CircularProgressIndicator(),
+        ),
       ),
     );
   }
