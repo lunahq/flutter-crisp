@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class CrispUser {
@@ -45,9 +45,8 @@ class _CrispMain {
         "\"]])");
   }
 
-  setMessage(List<String> texts) {
-    execute(
-        "window.\$crisp.push([\"set\", \"message:text\", [${texts.map((text) => '\"$text\"').join(',')}]])");
+  setMessage(String text) {
+    execute("window.\$crisp.push([\"set\", \"message:text\", [\"$text\"]])");
   }
 
   void execute(String script) {
@@ -70,42 +69,43 @@ class _CrispViewState extends State<CrispView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: WebView(
-        initialUrl:
-            'https://go.crisp.chat/chat/embed/?website_id=${crisp.websiteId}',
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController webViewController) {
-          _webViewController = webViewController;
-          _controller.complete(webViewController);
-        },
-        // ignore: prefer_collection_literals
-        javascriptChannels: <JavascriptChannel>[
-          _toasterJavascriptChannel(context),
-        ].toSet(),
-        navigationDelegate: (NavigationRequest request) {
-          if (request.url.startsWith('https://www.youtube.com/')) {
-            print('blocking navigation to $request}');
-            return NavigationDecision.prevent;
-          }
-          print('allowing navigation to $request');
-          return NavigationDecision.navigate;
-        },
-        onPageStarted: (String url) {
-          print('Page started loading: $url');
-        },
-        onPageFinished: (String url) async {
-          await Future.delayed(Duration(seconds: 5));
-          crisp.commands.forEach((javascriptString) {
-            _webViewController.evaluateJavascript(javascriptString);
-          });
+    return WebView(
+      initialUrl:
+          'https://go.crisp.chat/chat/embed/?website_id=${crisp.websiteId}',
+      javascriptMode: JavascriptMode.unrestricted,
+      onWebViewCreated: (WebViewController webViewController) {
+        _webViewController = webViewController;
+        _controller.complete(webViewController);
+      },
+      // ignore: prefer_collection_literals
+      javascriptChannels: <JavascriptChannel>[
+        _toasterJavascriptChannel(context),
+      ].toSet(),
+      navigationDelegate: (NavigationRequest request) {
+        if (request.url.contains('mailto:') ||
+            request.url.contains('https://') ||
+            request.url.contains('http://')) {
+          launch(request.url);
 
-          crisp.commands.clear();
+          return NavigationDecision.prevent;
+        }
+        print('allowing navigation to $request');
+        return NavigationDecision.navigate;
+      },
+      onPageStarted: (String url) {
+        print('Page started loading: $url');
+      },
+      onPageFinished: (String url) async {
+        // await Future.delayed(Duration(seconds: 5));
+        crisp.commands.forEach((javascriptString) {
+          _webViewController.evaluateJavascript(javascriptString);
+        });
 
-          print('Page finished loading: $url');
-        },
-        gestureNavigationEnabled: true,
-      ),
+        crisp.commands.clear();
+
+        print('Page finished loading: $url');
+      },
+      gestureNavigationEnabled: true,
     );
   }
 

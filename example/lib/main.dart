@@ -23,13 +23,16 @@ class _MyAppState extends State<MyApp> {
       ),
     );
 
-    crisp.setMessage(["Olá mundo", "asasasa", "asaksmaks"]);
+    crisp.setMessage("Olá mundo");
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: CrispView(),
+      home: Scaffold(
+        body: CrispView(),
+        appBar: AppBar(),
+      ),
     );
   }
 }
