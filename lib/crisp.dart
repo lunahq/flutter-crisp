@@ -1,17 +1,56 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class Crisp {
-  static const MethodChannel _channel = const MethodChannel('crisp');
+class CrispUser {
+  final String email;
+  final String avatar;
+  final String nickname;
+  final String phone;
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
+  CrispUser({
+    this.email,
+    this.avatar,
+    this.nickname,
+    this.phone,
+  });
+}
+
+class _CrispMain {
+  String websiteId;
+  Queue commands = Queue<String>();
+
+  void initialize(String id) {
+    websiteId = id;
+  }
+
+  void register(CrispUser user) {
+    execute("window.\$crisp.push([\"set\", \"user:email\", [\"" +
+        user.email +
+        "\"]])");
+
+    execute("window.\$crisp.push([\"set\", \"user:nickname\", [\"" +
+        user.nickname +
+        "\"]])");
+
+    execute("window.\$crisp.push([\"set\", \"user:avatar\", [\"" +
+        user.avatar +
+        "\"]])");
+
+    execute("window.\$crisp.push([\"set\", \"user:phone\", [\"" +
+        user.phone +
+        "\"]])");
+  }
+
+  void execute(String script) {
+    commands.add(script);
   }
 }
+
+final crisp = _CrispMain();
 
 class CrispView extends StatelessWidget {
   final String id;
@@ -21,16 +60,20 @@ class CrispView extends StatelessWidget {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
+  WebViewController _webViewController;
+
   @override
   Widget build(BuildContext context) {
+    print(crisp.websiteId);
     return Container(
       child: WebView(
-        initialUrl: 'https://go.crisp.chat/chat/embed/?website_id=$id',
+        initialUrl:
+            'https://go.crisp.chat/chat/embed/?website_id=${crisp.websiteId}',
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
+          _webViewController = webViewController;
           _controller.complete(webViewController);
         },
-        // TODO(iskakaushik): Remove this when collection literals makes it to stable.
         // ignore: prefer_collection_literals
         javascriptChannels: <JavascriptChannel>[
           _toasterJavascriptChannel(context),
@@ -46,7 +89,14 @@ class CrispView extends StatelessWidget {
         onPageStarted: (String url) {
           print('Page started loading: $url');
         },
-        onPageFinished: (String url) {
+        onPageFinished: (String url) async {
+          await Future.delayed(Duration(seconds: 5));
+          crisp.commands.forEach((javascriptString) {
+            _webViewController.evaluateJavascript(javascriptString);
+          });
+
+          crisp.commands.clear();
+
           print('Page finished loading: $url');
         },
         gestureNavigationEnabled: true,
