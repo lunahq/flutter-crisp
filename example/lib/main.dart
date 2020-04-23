@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:flutter/services.dart';
 import 'package:crisp/crisp.dart';
 
 void main() => runApp(MyApp());
@@ -12,37 +9,27 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-
   @override
   void initState() {
     super.initState();
 
-    crisp.initialize("");
+    crisp.initialize('11385bfa-3cf8-4a0f-beba-44629aec6779');
     crisp.register(
       CrispUser(
-        email: "",
-        avatar:
-            '',
-        nickname: "",
-        phone: "",
+        email: "fala@oiluna.com",
+        avatar: 'https://avatars2.githubusercontent.com/u/16270189?s=200&v=4',
+        nickname: "jao",
+        phone: "5511987654321",
       ),
     );
+
+    crisp.setMessage(["Olá mundo", "asasasa", "asaksmaks"]);
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: CrispView(
-            id: '11385bfa-3cf8-4a0f-beba-44629aec6779',
-          ),
-        ),
-      ),
+      home: CrispView(),
     );
   }
 }

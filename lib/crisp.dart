@@ -45,6 +45,11 @@ class _CrispMain {
         "\"]])");
   }
 
+  setMessage(List<String> texts) {
+    execute(
+        "window.\$crisp.push([\"set\", \"message:text\", [${texts.map((text) => '\"$text\"').join(',')}]])");
+  }
+
   void execute(String script) {
     commands.add(script);
   }
@@ -52,11 +57,12 @@ class _CrispMain {
 
 final crisp = _CrispMain();
 
-class CrispView extends StatelessWidget {
-  final String id;
+class CrispView extends StatefulWidget {
+  @override
+  _CrispViewState createState() => _CrispViewState();
+}
 
-  CrispView({this.id});
-
+class _CrispViewState extends State<CrispView> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
@@ -64,9 +70,8 @@ class CrispView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(crisp.websiteId);
-    return Container(
-      child: WebView(
+    return Scaffold(
+      body: WebView(
         initialUrl:
             'https://go.crisp.chat/chat/embed/?website_id=${crisp.websiteId}',
         javascriptMode: JavascriptMode.unrestricted,
