@@ -24,6 +24,7 @@ class CrispUser {
 class _CrispMain {
   String websiteId;
   Queue commands = Queue<String>();
+  CrispUser user;
 
   void initialize(String id) {
     websiteId = id;
@@ -48,6 +49,8 @@ class _CrispMain {
       execute("window.\$crisp.push([\"set\", \"user:phone\", [\"" +
           user.phone +
           "\"]])");
+
+    this.user = user;
   }
 
   setMessage(String text) {
@@ -89,16 +92,18 @@ class _CrispViewState extends State<CrispView> {
     super.initState();
     handleAppLifecycleState();
 
-    final javascriptString = """var a = setInterval(function(){
-      if (typeof \$crisp !== 'undefined'){  
-      ${crisp.commands.join(';')}
-      clearInterval(a)
-      } else {
-      console.log('no')
-      }
-      },500)""";
+    final javascriptString = """
+      var a = setInterval(function(){
+        if (typeof \$crisp !== 'undefined'){  
+          ${crisp.commands.join(';\n')}
+          clearInterval(a);
+        } 
+      },500)
+      """;
 
     crisp.commands.clear();
+
+    print(javascriptString);
     flutterWebViewPlugin.evalJavascript(javascriptString);
 
     flutterWebViewPlugin.onStateChanged.listen((
