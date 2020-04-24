@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:crisp/helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -13,11 +14,11 @@ class CrispUser {
   final String phone;
 
   CrispUser({
-    this.email,
+    @required this.email,
     this.avatar,
     this.nickname,
     this.phone,
-  });
+  }) : assert(email != null);
 }
 
 class _CrispMain {
@@ -33,17 +34,20 @@ class _CrispMain {
         user.email +
         "\"]])");
 
-    execute("window.\$crisp.push([\"set\", \"user:nickname\", [\"" +
-        user.nickname +
-        "\"]])");
+    if (notNull(user.nickname))
+      execute("window.\$crisp.push([\"set\", \"user:nickname\", [\"" +
+          user.nickname +
+          "\"]])");
 
-    execute("window.\$crisp.push([\"set\", \"user:avatar\", [\"" +
-        user.avatar +
-        "\"]])");
+    if (notNull(user.avatar))
+      execute("window.\$crisp.push([\"set\", \"user:avatar\", [\"" +
+          user.avatar +
+          "\"]])");
 
-    execute("window.\$crisp.push([\"set\", \"user:phone\", [\"" +
-        user.phone +
-        "\"]])");
+    if (notNull(user.phone))
+      execute("window.\$crisp.push([\"set\", \"user:phone\", [\"" +
+          user.phone +
+          "\"]])");
   }
 
   setMessage(String text) {
