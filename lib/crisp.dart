@@ -103,12 +103,13 @@ class _CrispViewState extends State<CrispView> {
 
     crisp.commands.clear();
 
-    print(javascriptString);
-    flutterWebViewPlugin.evalJavascript(javascriptString);
-
     flutterWebViewPlugin.onStateChanged.listen((
       WebViewStateChanged state,
     ) async {
+      if (state.type == WebViewState.finishLoad) {
+        flutterWebViewPlugin.evalJavascript(javascriptString);
+      }
+
       if (state.type == WebViewState.shouldStart) {
         if (state.url.contains('https://go.crisp.chat')) return;
 

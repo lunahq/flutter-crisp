@@ -1,3 +1,11 @@
+## 0.0.5
+
+- Evaluate javascript after webview is loaded.
+
+## 0.0.4
+
+- Fix javascript evaluation.
+
 ## 0.0.3
 
 - Improve description.
