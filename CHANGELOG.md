@@ -1,3 +1,8 @@
+## 0.1.0
+
+- Fix webview evaluate Javascript;
+- Create docs.
+
 ## 0.0.5
 
 - Evaluate javascript after webview is loaded.
