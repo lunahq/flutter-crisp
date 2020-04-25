@@ -30,7 +30,7 @@ These are the steps to configure and start working with the plugin:
 
 Pretty straightforward:
 
-```
+```dart
   @override
   void initState() {
     super.initState();
