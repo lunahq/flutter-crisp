@@ -1,6 +1,16 @@
 # Flutter Crisp
 
-[![pub package](https://img.shields.io/pub/v/crisp.svg)](https://pub.dartlang.org/packages/crisp)
+<p>
+  <a href="https://pub.dartlang.org/packages/crisp">
+    <img src="https://img.shields.io/pub/v/crisp.svg" alt="pub package" height="18">
+  </a>
+  <a href="#" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+  <a href="https://twitter.com/oilunabr" target="_blank">
+    <img alt="Twitter: oilunabr" src="https://img.shields.io/twitter/follow/oilunabr.svg?style=social" />
+  </a>
+</p>
 
 Connect with Crisp Chat, register a user to chat (or not) and render a chat widget.
 
