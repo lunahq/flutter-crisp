@@ -1,3 +1,7 @@
+## 0.1.1
+
+- Improve code organization;
+
 ## 0.1.0
 
 - Fix webview evaluate Javascript;
