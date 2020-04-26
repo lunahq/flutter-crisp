@@ -16,8 +16,6 @@ String crispEmbedUrl(String websiteId, String locale) {
   return url;
 }
 
-final crisp = CrispMain();
-
 class CrispView extends StatefulWidget {
   final Widget loadingWidget;
   final AppBar appBar;

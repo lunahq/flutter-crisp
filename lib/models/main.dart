@@ -4,7 +4,7 @@ import 'package:crisp/helpers.dart';
 import 'package:crisp/models/user.dart';
 import 'package:flutter/material.dart';
 
-class CrispMain {
+class _CrispMain {
   String websiteId;
   String locale;
   Queue commands = Queue<String>();
@@ -46,3 +46,5 @@ class CrispMain {
     commands.add(script);
   }
 }
+
+final crisp = _CrispMain();

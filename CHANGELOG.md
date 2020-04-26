@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Improve main class scope.
+
 ## 0.1.1
 
 - Improve code organization;
