@@ -1,6 +1,7 @@
 ## 0.1.1
 
 - Improve code organization;
+- Add locale option.
 
 ## 0.1.0
 

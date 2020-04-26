@@ -13,17 +13,21 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    crisp.initialize('WEBSITE_ID');
+    crisp.initialize(
+      websiteId: 'WEBSITE_ID',
+      locale: 'pt-br',
+    );
+
     crisp.register(
       CrispUser(
-        email: "leo@gmail.com",
+        email: "leo@provider.com",
         avatar: 'https://avatars2.githubusercontent.com/u/16270189?s=200&v=4',
         nickname: "João Cardoso",
         phone: "5511987654321",
       ),
     );
 
-    crisp.setMessage("Olá mundo ksansans");
+    crisp.setMessage("Hello world");
   }
 
   @override

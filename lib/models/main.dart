@@ -2,14 +2,17 @@ import 'dart:collection';
 
 import 'package:crisp/helpers.dart';
 import 'package:crisp/models/user.dart';
+import 'package:flutter/material.dart';
 
-class _CrispMain {
+class CrispMain {
   String websiteId;
+  String locale;
   Queue commands = Queue<String>();
   CrispUser user;
 
-  void initialize(String id) {
-    websiteId = id;
+  void initialize({@required String websiteId, String locale}) {
+    this.websiteId = websiteId;
+    this.locale = locale;
   }
 
   void register(CrispUser user) {
@@ -43,5 +46,3 @@ class _CrispMain {
     commands.add(script);
   }
 }
-
-final crisp = _CrispMain();
