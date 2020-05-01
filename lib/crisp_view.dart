@@ -28,12 +28,14 @@ class CrispView extends StatefulWidget {
 
 class _CrispViewState extends State<CrispView> {
   final flutterWebViewPlugin = FlutterWebviewPlugin();
+  bool browserContextChanged = false;
 
   handleAppLifecycleState() {
     SystemChannels.lifecycle.setMessageHandler((msg) {
-      if (msg == "AppLifecycleState.resumed") {
+      if (msg == "AppLifecycleState.resumed" && browserContextChanged) {
         flutterWebViewPlugin
             .reloadUrl(crispEmbedUrl(crisp.websiteId, crisp.locale));
+        browserContextChanged = false;
       }
       return null;
     });
@@ -65,6 +67,7 @@ class _CrispViewState extends State<CrispView> {
       if (state.type == WebViewState.shouldStart) {
         if (state.url.contains(CRISP_BASE_URL)) return;
 
+        browserContextChanged = true;
         print("navigating to...${state.url}");
         if (state.url.startsWith("mailto") ||
             state.url.startsWith("tel") ||

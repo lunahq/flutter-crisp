@@ -1,3 +1,7 @@
+## 0.1.3
+
+- Fix upload file.
+
 ## 0.1.2
 
 - Improve main class scope.
