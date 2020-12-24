@@ -7,12 +7,18 @@ import 'package:flutter/material.dart';
 class _CrispMain {
   String websiteId;
   String locale;
+  String userToken;
   Queue commands = Queue<String>();
   CrispUser user;
 
-  void initialize({@required String websiteId, String locale}) {
+  void initialize({
+    @required String websiteId,
+    String locale,
+    String userToken,
+  }) {
     this.websiteId = websiteId;
     this.locale = locale;
+    this.userToken = userToken;
   }
 
   void register(CrispUser user) {

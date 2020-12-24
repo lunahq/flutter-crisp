@@ -8,10 +8,11 @@ import 'models/main.dart';
 
 const CRISP_BASE_URL = 'https://go.crisp.chat';
 
-String crispEmbedUrl(String websiteId, String locale) {
+String crispEmbedUrl(String websiteId, String locale, String userToken) {
   String url = CRISP_BASE_URL + '/chat/embed/?website_id=$websiteId';
 
   if (notNull(locale)) url += '&locale=$locale';
+  if (notNull(userToken)) url += '&token_id=$userToken';
 
   return url;
 }
@@ -33,8 +34,8 @@ class _CrispViewState extends State<CrispView> {
   handleAppLifecycleState() {
     SystemChannels.lifecycle.setMessageHandler((msg) {
       if (msg == "AppLifecycleState.resumed" && browserContextChanged) {
-        flutterWebViewPlugin
-            .reloadUrl(crispEmbedUrl(crisp.websiteId, crisp.locale));
+        flutterWebViewPlugin.reloadUrl(
+            crispEmbedUrl(crisp.websiteId, crisp.locale, crisp.userToken));
         browserContextChanged = false;
       }
       return null;
@@ -48,10 +49,10 @@ class _CrispViewState extends State<CrispView> {
 
     final javascriptString = """
       var a = setInterval(function(){
-        if (typeof \$crisp !== 'undefined'){  
+        if (typeof \$crisp !== 'undefined'){
           ${crisp.commands.join(';\n')}
           clearInterval(a);
-        } 
+        }
       },500)
       """;
 
@@ -95,7 +96,7 @@ class _CrispViewState extends State<CrispView> {
   @override
   Widget build(BuildContext context) {
     return WebviewScaffold(
-      url: crispEmbedUrl(crisp.websiteId, crisp.locale),
+      url: crispEmbedUrl(crisp.websiteId, crisp.locale, crisp.userToken),
       mediaPlaybackRequiresUserGesture: false,
       appBar: widget.appBar,
       withZoom: true,
