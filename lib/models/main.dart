@@ -22,9 +22,16 @@ class _CrispMain {
   }
 
   void register(CrispUser user) {
-    execute("window.\$crisp.push([\"set\", \"user:email\", [\"" +
+    if (notNull(user.verificationCode))
+      execute("window.\$crisp.push([\"set\", \"user:email\", [\"" +
         user.email +
+        "\", \"" + 
+        user.verificationCode + 
         "\"]])");
+    else
+      execute("window.\$crisp.push([\"set\", \"user:email\", [\"" +
+          user.email +
+          "\"]])");
 
     if (notNull(user.nickname))
       execute("window.\$crisp.push([\"set\", \"user:nickname\", [\"" +
