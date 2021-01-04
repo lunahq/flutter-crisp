@@ -77,3 +77,30 @@ Pretty straightforward:
     crisp.setMessage("Hello world - initial message");
   }
 ```
+
+## Additional parameters
+
+You can set a chat user token via `userToken`
+
+```dart
+crisp.initialize(
+  websiteId: 'WEBSITE_ID',
+  locale: 'pt-br',
+  userToken: '<USERTOKENHERE>',
+);
+```
+
+
+You can set a verification token via `verificationCode` More details on [User Verification](https://help.crisp.chat/en/article/how-to-verify-user-identity-with-cryptographic-email-signatures-166sl01/)
+
+```dart
+crisp.register(
+  CrispUser(
+    email: "example@provider.com",
+    avatar: 'https://avatars2.githubusercontent.com/u/16270189?s=200&v=4',
+    nickname: "João Cardoso",
+    phone: "5511987654321",
+    verificationCode: "<HMAC256CODEHERE>",
+  ),
+);
+```
