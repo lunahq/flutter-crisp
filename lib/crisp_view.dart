@@ -1,110 +1,116 @@
-import 'package:crisp/helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'models/main.dart';
 
 const CRISP_BASE_URL = 'https://go.crisp.chat';
 
-String crispEmbedUrl(String websiteId, String locale, String userToken) {
+String crispEmbedUrl({
+  required String websiteId,
+  required String locale,
+  String? userToken,
+}) {
   String url = CRISP_BASE_URL + '/chat/embed/?website_id=$websiteId';
 
-  if (notNull(locale)) url += '&locale=$locale';
-  if (notNull(userToken)) url += '&token_id=$userToken';
+  url += '&locale=$locale';
+  if (userToken != null) url += '&token_id=$userToken';
 
   return url;
 }
 
 class CrispView extends StatefulWidget {
-  final Widget loadingWidget;
-  final AppBar appBar;
+  final CrispMain crispMain;
+  final Widget? loadingWidget;
+  final AppBar? appBar;
 
   @override
   _CrispViewState createState() => _CrispViewState();
 
-  CrispView({this.loadingWidget, this.appBar});
+  CrispView({
+    required this.crispMain,
+    this.loadingWidget,
+    this.appBar,
+  });
 }
 
 class _CrispViewState extends State<CrispView> {
-  final flutterWebViewPlugin = FlutterWebviewPlugin();
-  bool browserContextChanged = false;
+  InAppWebViewController? webViewController;
+  String? javascriptString;
 
-  handleAppLifecycleState() {
-    SystemChannels.lifecycle.setMessageHandler((msg) {
-      if (msg == "AppLifecycleState.resumed" && browserContextChanged) {
-        flutterWebViewPlugin.reloadUrl(
-            crispEmbedUrl(crisp.websiteId, crisp.locale, crisp.userToken));
-        browserContextChanged = false;
-      }
-      return null;
-    });
-  }
+  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
+    crossPlatform: InAppWebViewOptions(
+      useShouldOverrideUrlLoading: true,
+      mediaPlaybackRequiresUserGesture: false,
+    ),
+    android: AndroidInAppWebViewOptions(
+      useHybridComposition: true,
+    ),
+    ios: IOSInAppWebViewOptions(
+      allowsInlineMediaPlayback: true,
+    ),
+  );
 
   @override
   void initState() {
     super.initState();
-    handleAppLifecycleState();
 
-    final javascriptString = """
+    javascriptString = """
       var a = setInterval(function(){
         if (typeof \$crisp !== 'undefined'){
-          ${crisp.commands.join(';\n')}
+          ${widget.crispMain.commands.join(';\n')}
           clearInterval(a);
         }
       },500)
       """;
 
-    crisp.commands.clear();
-
-    flutterWebViewPlugin.onStateChanged.listen((
-      WebViewStateChanged state,
-    ) async {
-      if (state.type == WebViewState.finishLoad) {
-        flutterWebViewPlugin.evalJavascript(javascriptString);
-      }
-
-      if (state.type == WebViewState.shouldStart) {
-        if (state.url.contains(CRISP_BASE_URL)) return;
-
-        browserContextChanged = true;
-        print("navigating to...${state.url}");
-        if (state.url.startsWith("mailto") ||
-            state.url.startsWith("tel") ||
-            state.url.startsWith("http") ||
-            state.url.startsWith("https")) {
-          await flutterWebViewPlugin.stopLoading();
-
-          if (await canLaunch(state.url)) {
-            await launch(state.url);
-            return;
-          }
-          print("couldn't launch $state.url");
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    flutterWebViewPlugin.dispose();
-
-    super.dispose();
+    widget.crispMain.commands.clear();
   }
 
   @override
   Widget build(BuildContext context) {
-    return WebviewScaffold(
-      url: crispEmbedUrl(crisp.websiteId, crisp.locale, crisp.userToken),
-      mediaPlaybackRequiresUserGesture: false,
-      appBar: widget.appBar,
-      withZoom: true,
-      withLocalStorage: true,
-      hidden: true,
-      initialChild: widget.loadingWidget,
-      withJavascript: true,
+    return Scaffold(
       resizeToAvoidBottomInset: true,
+      body: InAppWebView(
+        initialUrlRequest: URLRequest(
+          url: Uri.parse(crispEmbedUrl(
+            websiteId: widget.crispMain.websiteId,
+            locale: widget.crispMain.locale,
+            userToken: widget.crispMain.userToken,
+          )),
+        ),
+        initialOptions: options,
+        onWebViewCreated: (InAppWebViewController controller) {
+          webViewController = controller;
+        },
+        onLoadStop: (InAppWebViewController controller, Uri? url) async {
+          webViewController?.evaluateJavascript(source: javascriptString!);
+        },
+        shouldOverrideUrlLoading: (controller, navigationAction) async {
+          var uri = navigationAction.request.url;
+          var url = uri.toString();
+
+          if ([
+            "http",
+            "https",
+            "tel",
+            "mailto",
+            "file",
+            "chrome",
+            "data",
+            "javascript",
+            "about"
+          ].contains(uri?.scheme)) {
+            if (await canLaunch(url)) {
+              await launch(url);
+
+              return NavigationActionPolicy.CANCEL;
+            }
+          }
+
+          return NavigationActionPolicy.ALLOW;
+        },
+      ),
     );
   }
 }

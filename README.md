@@ -16,9 +16,34 @@ Connect with Crisp Chat, register a user to chat (or not) and render a chat widg
 
 Tested on Android and iOS.
 
-## Required setup for iOS
+## Required setup
 
-You need to setup setup the a key in iOS, as described at [flutter_webview_plugin](https://github.com/fluttercommunity/flutter_webview_plugin#ios).
+Min SDK version:
+
+`minSdkVersion 17`
+
+`AndroidManifest.xml` necessary changes:
+
+```android
+    <application
+        android:usesCleartextTraffic="true">
+        ...
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+        <provider
+            android:name="com.pichillilorenzo.flutter_inappwebview.InAppWebViewFileProvider"
+            android:authorities="${applicationId}.flutter_inappwebview.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+    </application>
+```
+
+For details check the example folder.
 
 ## How to use
 
@@ -28,45 +53,19 @@ Initialize with:
 - An optional locale.
 
 ```dart
-crisp.initialize(
-  websiteId: 'WEBSITE_ID',
-  locale: 'pt-br',
-);
-```
+  CrispMain crispMain;
 
-Optionally register an user
-
-```dart
-crisp.register(
-  CrispUser(
-    email: "example@provider.com",
-    avatar: 'https://avatars2.githubusercontent.com/u/16270189?s=200&v=4',
-    nickname: "João Cardoso",
-    phone: "5511987654321",
-  ),
-);
-```
-
-Set a initial message
-
-```dart
-crisp.setMessage("Hello world - initial message");
-```
-
-Pretty straightforward:
-
-```dart
   @override
   void initState() {
     super.initState();
 
-    crisp.initialize(
+    crispMain = CrispMain(
       websiteId: 'WEBSITE_ID',
       locale: 'pt-br',
     );
 
-    crisp.register(
-      CrispUser(
+    crispMain.register(
+      user: CrispUser(
         email: "example@provider.com",
         avatar: 'https://avatars2.githubusercontent.com/u/16270189?s=200&v=4',
         nickname: "João Cardoso",
@@ -74,7 +73,7 @@ Pretty straightforward:
       ),
     );
 
-    crisp.setMessage("Hello world - initial message");
+    crispMain.setMessage("Hello world");
   }
 ```
 
@@ -83,19 +82,18 @@ Pretty straightforward:
 You can set a chat user token via `userToken`
 
 ```dart
-crisp.initialize(
+crispMain.initialize(
   websiteId: 'WEBSITE_ID',
   locale: 'pt-br',
   userToken: '<USERTOKENHERE>',
 );
 ```
 
-
 You can set a verification token via `verificationCode` More details on [User Verification](https://help.crisp.chat/en/article/how-to-verify-user-identity-with-cryptographic-email-signatures-166sl01/)
 
 ```dart
-crisp.register(
-  CrispUser(
+crispMain.register(
+  user: CrispUser(
     email: "example@provider.com",
     avatar: 'https://avatars2.githubusercontent.com/u/16270189?s=200&v=4',
     nickname: "João Cardoso",

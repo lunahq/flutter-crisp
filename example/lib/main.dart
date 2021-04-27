@@ -9,17 +9,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  CrispMain crispMain;
+
   @override
   void initState() {
     super.initState();
 
-    crisp.initialize(
-      websiteId: 'WEBSITE_ID',
+    crispMain = CrispMain(
+      websiteId: '11385bfa-3cf8-4a0f-beba-44629aec6779',
       locale: 'pt-br',
     );
 
-    crisp.register(
-      CrispUser(
+    crispMain.register(
+      user: CrispUser(
         email: "leo@provider.com",
         avatar: 'https://avatars2.githubusercontent.com/u/16270189?s=200&v=4',
         nickname: "João Cardoso",
@@ -27,7 +29,7 @@ class _MyAppState extends State<MyApp> {
       ),
     );
 
-    crisp.setMessage("Hello world");
+    crispMain.setMessage("Hello world");
   }
 
   @override
@@ -40,6 +42,7 @@ class _MyAppState extends State<MyApp> {
         loadingWidget: Center(
           child: CircularProgressIndicator(),
         ),
+        crispMain: crispMain,
       ),
     );
   }
