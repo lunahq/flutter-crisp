@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:crisp/models/user.dart';
 
+/// The main model for the [CrispView]
 class CrispMain {
   CrispMain({
     required this.websiteId,
@@ -13,12 +14,22 @@ class CrispMain {
     this.userToken = userToken;
   }
 
+  /// The id of your crisp chat
   final String websiteId;
+
+  /// Locale to define which language the chat should appear
   String locale = 'en';
+
+  /// The token of the user
   String? userToken;
+
+  /// Commands which are defined on [register] and executed on [CrispView] initState
   Queue commands = Queue<String>();
+
+  /// The chat user model with possible additional data
   CrispUser? user;
 
+  /// Register a new user to start the chat
   void register({required CrispUser user}) {
     if (user.verificationCode != null)
       appendScript("window.\$crisp.push([\"set\", \"user:email\", [\"" +

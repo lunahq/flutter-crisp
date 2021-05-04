@@ -1,6 +1,6 @@
 name: crisp
 description: Connect with Crisp Chat, register a user to chat (or not) and render a chat widget.
-version: 0.1.4
+version: 0.1.5
 homepage: https://github.com/lunahq/flutter-crisp
 
 environment:
@@ -17,10 +17,3 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 flutter:
-  plugin:
-    platforms:
-      android:
-        package: com.oiluna.crisp
-        pluginClass: CrispPlugin
-      ios:
-        pluginClass: CrispPlugin

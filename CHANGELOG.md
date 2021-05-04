@@ -1,3 +1,8 @@
+## 0.1.5
+
+- Make it a package;
+- Provide `dartdoc`;
+
 ## 0.1.4
 
 - Migrate to null safety.

@@ -6,7 +6,7 @@ import 'models/main.dart';
 
 const CRISP_BASE_URL = 'https://go.crisp.chat';
 
-String crispEmbedUrl({
+String _crispEmbedUrl({
   required String websiteId,
   required String locale,
   String? userToken,
@@ -19,9 +19,15 @@ String crispEmbedUrl({
   return url;
 }
 
+/// The main widget to provide the view of the chat
 class CrispView extends StatefulWidget {
+  /// Model with main settings of this chat
   final CrispMain crispMain;
+
+  /// Custom loading widget
   final Widget? loadingWidget;
+
+  /// Custom app bar
   final AppBar? appBar;
 
   @override
@@ -35,10 +41,10 @@ class CrispView extends StatefulWidget {
 }
 
 class _CrispViewState extends State<CrispView> {
-  InAppWebViewController? webViewController;
-  String? javascriptString;
+  InAppWebViewController? _webViewController;
+  String? _javascriptString;
 
-  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
+  InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
     crossPlatform: InAppWebViewOptions(
       useShouldOverrideUrlLoading: true,
       mediaPlaybackRequiresUserGesture: false,
@@ -55,7 +61,7 @@ class _CrispViewState extends State<CrispView> {
   void initState() {
     super.initState();
 
-    javascriptString = """
+    _javascriptString = """
       var a = setInterval(function(){
         if (typeof \$crisp !== 'undefined'){
           ${widget.crispMain.commands.join(';\n')}
@@ -73,18 +79,18 @@ class _CrispViewState extends State<CrispView> {
       resizeToAvoidBottomInset: true,
       body: InAppWebView(
         initialUrlRequest: URLRequest(
-          url: Uri.parse(crispEmbedUrl(
+          url: Uri.parse(_crispEmbedUrl(
             websiteId: widget.crispMain.websiteId,
             locale: widget.crispMain.locale,
             userToken: widget.crispMain.userToken,
           )),
         ),
-        initialOptions: options,
+        initialOptions: _options,
         onWebViewCreated: (InAppWebViewController controller) {
-          webViewController = controller;
+          _webViewController = controller;
         },
         onLoadStop: (InAppWebViewController controller, Uri? url) async {
-          webViewController?.evaluateJavascript(source: javascriptString!);
+          _webViewController?.evaluateJavascript(source: _javascriptString!);
         },
         shouldOverrideUrlLoading: (controller, navigationAction) async {
           var uri = navigationAction.request.url;
