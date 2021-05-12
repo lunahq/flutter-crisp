@@ -1,3 +1,7 @@
+## 0.1.6
+
+- Removes website id;
+
 ## 0.1.5
 
 - Make it a package;

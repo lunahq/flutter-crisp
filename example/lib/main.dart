@@ -16,7 +16,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     crispMain = CrispMain(
-      websiteId: '11385bfa-3cf8-4a0f-beba-44629aec6779',
+      websiteId: 'WEBSITE_ID',
       locale: 'pt-br',
     );
 
