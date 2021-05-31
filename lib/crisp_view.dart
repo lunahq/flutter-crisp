@@ -46,7 +46,7 @@ class _CrispViewState extends State<CrispView> {
 
   InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
     crossPlatform: InAppWebViewOptions(
-      useShouldOverrideUrlLoading: false,
+      useShouldOverrideUrlLoading: true,
       mediaPlaybackRequiresUserGesture: false,
     ),
     android: AndroidInAppWebViewOptions(
@@ -91,6 +91,32 @@ class _CrispViewState extends State<CrispView> {
         },
         onLoadStop: (InAppWebViewController controller, Uri? url) async {
           _webViewController?.evaluateJavascript(source: _javascriptString!);
+        },
+        shouldOverrideUrlLoading: (controller, navigationAction) async {
+          var uri = navigationAction.request.url;
+          var url = uri.toString();
+
+          if ([
+            "http",
+            "https",
+            "tel",
+            "mailto",
+            "file",
+            "chrome",
+            "data",
+            "javascript",
+            "about"
+          ].contains(uri?.host)) {
+            /// Fix: on iOS `shouldOverrideUrlLoading` works at start and chat opens in the browser
+            /// https://github.com/lunahq/flutter-crisp/issues/13
+            if (uri?.host != 'go.crisp.chat' && await canLaunch(url)) {
+              await launch(url);
+
+              return NavigationActionPolicy.CANCEL;
+            }
+          }
+
+          return NavigationActionPolicy.ALLOW;
         },
       ),
     );
