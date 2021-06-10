@@ -65,6 +65,13 @@ class CrispMain {
         "window.\$crisp.push([\"set\", \"message:text\", [\"$text\"]])");
   }
 
+  setSessionData(Map<String, String> sessionData) {
+    if (sessionData.isEmpty) return;
+
+    sessionData.forEach((key, value) => appendScript(
+        'window.\$crisp.push(["set", "session:data", ["$key", "$value"]]);'));
+  }
+
   void appendScript(String script) {
     commands.add(script);
   }

@@ -30,6 +30,11 @@ class _MyAppState extends State<MyApp> {
     );
 
     crispMain.setMessage("Hello world");
+
+    crispMain.setSessionData({
+      "order_id": "111",
+      "app_version": "0.1.1",
+    });
   }
 
   @override
