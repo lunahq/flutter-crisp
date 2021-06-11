@@ -96,21 +96,23 @@ class _CrispViewState extends State<CrispView> {
           var uri = navigationAction.request.url;
           var url = uri.toString();
 
-          if ([
-            "http",
-            "https",
-            "tel",
-            "mailto",
-            "file",
-            "chrome",
-            "data",
-            "javascript",
-            "about"
-          ].contains(uri?.scheme)) {
-            if (await canLaunch(url)) {
-              await launch(url);
+          if (uri?.host != 'go.crisp.chat') {
+            if ([
+              "http",
+              "https",
+              "tel",
+              "mailto",
+              "file",
+              "chrome",
+              "data",
+              "javascript",
+              "about"
+            ].contains(uri?.scheme)) {
+              if (await canLaunch(url)) {
+                await launch(url);
 
-              return NavigationActionPolicy.CANCEL;
+                return NavigationActionPolicy.CANCEL;
+              }
             }
           }
 

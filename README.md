@@ -74,6 +74,11 @@ Initialize with:
     );
 
     crispMain.setMessage("Hello world");
+
+    crispMain.setSessionData({
+      "order_id": "111",
+      "app_version": "0.1.1",
+    });
   }
 ```
 
@@ -101,4 +106,12 @@ crispMain.register(
     verificationCode: "<HMAC256CODEHERE>",
   ),
 );
+```
+
+You can set user custom data via `setSessionData` more detail on [Set custom data](https://help.crisp.chat/en/article/how-can-i-automatically-set-custom-data-1xh7pqk/)
+```
+crispMain.setSessionData({
+  "order_id": "111",
+  "app_version": "0.1.1",
+});
 ```
