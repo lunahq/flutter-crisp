@@ -1,3 +1,7 @@
+## 0.1.7
+
+- Fix iOS;
+
 ## 0.1.6
 
 - Removes website id;
