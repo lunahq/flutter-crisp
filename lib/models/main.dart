@@ -67,9 +67,11 @@ class CrispMain {
         "window.\$crisp.push([\"set\", \"message:text\", [\"$text\"]])");
   }
 
-  setSegments(String segments) {
-    appendScript(
-        "window.\$crisp.push([\"set\", \"session:segments\", [[\"$segments\"]]])");
+  setSegments(List<String> segments) {
+    if (segments.isEmpty) return;
+
+    segments.forEach((value) => appendScript(
+        'window.\$crisp.push(["set", "session:segments", ["$value"]]);'));
   }
 
   setSessionData(Map<String, String> sessionData) {
