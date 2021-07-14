@@ -1,3 +1,7 @@
+## 0.1.8
+
+- Add `setSegments` (Thanks @maavimartinez);
+
 ## 0.1.7
 
 - Fix iOS;
