@@ -2,6 +2,8 @@ import 'dart:collection';
 
 import 'package:crisp/models/user.dart';
 
+import 'user.dart';
+
 /// The main model for the [CrispView]
 class CrispMain {
   CrispMain({
@@ -63,6 +65,13 @@ class CrispMain {
   setMessage(String text) {
     appendScript(
         "window.\$crisp.push([\"set\", \"message:text\", [\"$text\"]])");
+  }
+
+  setSegments(List<String> segments) {
+    if (segments.isEmpty) return;
+
+    segments.forEach((value) => appendScript(
+        'window.\$crisp.push(["set", "session:segments", [["$value"]]]);'));
   }
 
   setSessionData(Map<String, String> sessionData) {
