@@ -40,14 +40,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: CrispView(
+      home: Scaffold(
         appBar: AppBar(
-          title: const Text('Widget WebView'),
+          title: const Text('Your brand'),
         ),
-        loadingWidget: Center(
-          child: CircularProgressIndicator(),
+        body: CrispView(
+          crispMain: crispMain,
         ),
-        crispMain: crispMain,
       ),
     );
   }
