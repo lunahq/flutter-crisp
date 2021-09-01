@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -78,6 +80,12 @@ class _CrispViewState extends State<CrispView> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: InAppWebView(
+        gestureRecognizers: Set()
+          ..add(
+            Factory<VerticalDragGestureRecognizer>(
+              () => VerticalDragGestureRecognizer(),
+            ),
+          ),
         initialUrlRequest: URLRequest(
           url: Uri.parse(_crispEmbedUrl(
             websiteId: widget.crispMain.websiteId,
