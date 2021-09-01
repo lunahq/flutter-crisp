@@ -26,20 +26,10 @@ class CrispView extends StatefulWidget {
   /// Model with main settings of this chat
   final CrispMain crispMain;
 
-  /// Custom loading widget
-  final Widget? loadingWidget;
-
-  /// Custom app bar
-  final AppBar? appBar;
-
   @override
   _CrispViewState createState() => _CrispViewState();
 
-  CrispView({
-    required this.crispMain,
-    this.loadingWidget,
-    this.appBar,
-  });
+  CrispView({required this.crispMain});
 }
 
 class _CrispViewState extends State<CrispView> {
