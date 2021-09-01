@@ -1,3 +1,8 @@
+## 0.1.9
+
+- Remove legacy `appBar` and `loading` widgets and add external `appBar` on example;
+- Add `AndroidCacheMode.LOAD_CACHE_ELSE_NETWORK` option for performance improvement.
+
 ## 0.1.8
 
 - Add `setSegments` (Thanks @maavimartinez);
