@@ -53,6 +53,7 @@ class _CrispViewState extends State<CrispView> {
     ),
     android: AndroidInAppWebViewOptions(
       useHybridComposition: true,
+      cacheMode: AndroidCacheMode.LOAD_CACHE_ELSE_NETWORK,
     ),
     ios: IOSInAppWebViewOptions(
       allowsInlineMediaPlayback: true,
