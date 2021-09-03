@@ -68,56 +68,53 @@ class _CrispViewState extends State<CrispView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: InAppWebView(
-        gestureRecognizers: Set()
-          ..add(
-            Factory<VerticalDragGestureRecognizer>(
-              () => VerticalDragGestureRecognizer(),
-            ),
+    return InAppWebView(
+      gestureRecognizers: Set()
+        ..add(
+          Factory<VerticalDragGestureRecognizer>(
+            () => VerticalDragGestureRecognizer(),
           ),
-        initialUrlRequest: URLRequest(
-          url: Uri.parse(_crispEmbedUrl(
-            websiteId: widget.crispMain.websiteId,
-            locale: widget.crispMain.locale,
-            userToken: widget.crispMain.userToken,
-          )),
         ),
-        initialOptions: _options,
-        onWebViewCreated: (InAppWebViewController controller) {
-          _webViewController = controller;
-        },
-        onLoadStop: (InAppWebViewController controller, Uri? url) async {
-          _webViewController?.evaluateJavascript(source: _javascriptString!);
-        },
-        shouldOverrideUrlLoading: (controller, navigationAction) async {
-          var uri = navigationAction.request.url;
-          var url = uri.toString();
+      initialUrlRequest: URLRequest(
+        url: Uri.parse(_crispEmbedUrl(
+          websiteId: widget.crispMain.websiteId,
+          locale: widget.crispMain.locale,
+          userToken: widget.crispMain.userToken,
+        )),
+      ),
+      initialOptions: _options,
+      onWebViewCreated: (InAppWebViewController controller) {
+        _webViewController = controller;
+      },
+      onLoadStop: (InAppWebViewController controller, Uri? url) async {
+        _webViewController?.evaluateJavascript(source: _javascriptString!);
+      },
+      shouldOverrideUrlLoading: (controller, navigationAction) async {
+        var uri = navigationAction.request.url;
+        var url = uri.toString();
 
-          if (uri?.host != 'go.crisp.chat') {
-            if ([
-              "http",
-              "https",
-              "tel",
-              "mailto",
-              "file",
-              "chrome",
-              "data",
-              "javascript",
-              "about"
-            ].contains(uri?.scheme)) {
-              if (await canLaunch(url)) {
-                await launch(url);
+        if (uri?.host != 'go.crisp.chat') {
+          if ([
+            "http",
+            "https",
+            "tel",
+            "mailto",
+            "file",
+            "chrome",
+            "data",
+            "javascript",
+            "about"
+          ].contains(uri?.scheme)) {
+            if (await canLaunch(url)) {
+              await launch(url);
 
-                return NavigationActionPolicy.CANCEL;
-              }
+              return NavigationActionPolicy.CANCEL;
             }
           }
+        }
 
-          return NavigationActionPolicy.ALLOW;
-        },
-      ),
+        return NavigationActionPolicy.ALLOW;
+      },
     );
   }
 }
