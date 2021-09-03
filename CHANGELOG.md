@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Fix text field size problem on iOS.
+
 ## 0.1.9
 
 - Remove legacy `appBar` and `loading` widgets and add external `appBar` on example;
