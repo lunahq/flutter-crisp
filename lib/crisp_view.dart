@@ -38,6 +38,7 @@ class _CrispViewState extends State<CrispView> {
 
   InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
     crossPlatform: InAppWebViewOptions(
+      clearCache: true,
       useShouldOverrideUrlLoading: true,
       mediaPlaybackRequiresUserGesture: false,
     ),
