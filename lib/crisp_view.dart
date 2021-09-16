@@ -26,34 +26,42 @@ class CrispView extends StatefulWidget {
   /// Model with main settings of this chat
   final CrispMain crispMain;
 
+  /// Set to true to have all the browser's cache cleared before the new WebView is opened. The default value is false.
+  final bool clearCache;
+
   @override
   _CrispViewState createState() => _CrispViewState();
 
-  CrispView({required this.crispMain});
+  CrispView({
+    required this.crispMain,
+    this.clearCache = false,
+  });
 }
 
 class _CrispViewState extends State<CrispView> {
   InAppWebViewController? _webViewController;
   String? _javascriptString;
 
-  InAppWebViewGroupOptions _options = InAppWebViewGroupOptions(
-    crossPlatform: InAppWebViewOptions(
-      useShouldOverrideUrlLoading: true,
-      mediaPlaybackRequiresUserGesture: false,
-    ),
-    android: AndroidInAppWebViewOptions(
-      useHybridComposition: true,
-      cacheMode: AndroidCacheMode.LOAD_CACHE_ELSE_NETWORK,
-    ),
-    ios: IOSInAppWebViewOptions(
-      allowsInlineMediaPlayback: true,
-    ),
-  );
+  late InAppWebViewGroupOptions _options;
 
   @override
   void initState() {
     super.initState();
-
+    _options = InAppWebViewGroupOptions(
+      crossPlatform: InAppWebViewOptions(
+        clearCache: widget.clearCache,
+        useShouldOverrideUrlLoading: true,
+        mediaPlaybackRequiresUserGesture: false,
+      ),
+      android: AndroidInAppWebViewOptions(
+        useHybridComposition: true,
+        cacheMode: AndroidCacheMode.LOAD_CACHE_ELSE_NETWORK,
+      ),
+      ios: IOSInAppWebViewOptions(
+        allowsInlineMediaPlayback: true,
+      ),
+    );
+    
     _javascriptString = """
       var a = setInterval(function(){
         if (typeof \$crisp !== 'undefined'){
