@@ -1,3 +1,8 @@
+## 0.2.1
+
+- Add clear cache option;
+- Add `CrispView` example code to README.
+
 ## 0.2.0
 
 - Fix text field size problem on iOS.

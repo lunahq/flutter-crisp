@@ -46,6 +46,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: CrispView(
           crispMain: crispMain,
+          clearCache: false,
         ),
       ),
     );

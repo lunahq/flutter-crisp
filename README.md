@@ -82,6 +82,27 @@ Initialize with:
   }
 ```
 
+Then use with:
+
+- Optional clear cache.
+
+```dart
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Your brand'),
+        ),
+        body: CrispView(
+          crispMain: crispMain,
+          clearCache: false,
+        ),
+      ),
+    );
+  }
+```
+
 ## Additional parameters
 
 You can set a chat user token via `userToken`
@@ -109,6 +130,7 @@ crispMain.register(
 ```
 
 You can set user custom data via `setSessionData` more detail on [Set custom data](https://help.crisp.chat/en/article/how-can-i-automatically-set-custom-data-1xh7pqk/)
+
 ```
 crispMain.setSessionData({
   "order_id": "111",
