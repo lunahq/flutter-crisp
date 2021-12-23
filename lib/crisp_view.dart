@@ -28,6 +28,7 @@ class CrispView extends StatefulWidget {
 
   /// Set to true to have all the browser's cache cleared before the new WebView is opened. The default value is false.
   final bool clearCache;
+  final void Function(String url)? onLinkPressed;
 
   @override
   _CrispViewState createState() => _CrispViewState();
@@ -35,6 +36,7 @@ class CrispView extends StatefulWidget {
   CrispView({
     required this.crispMain,
     this.clearCache = false,
+    this.onLinkPressed,
   });
 }
 
@@ -61,7 +63,7 @@ class _CrispViewState extends State<CrispView> {
         allowsInlineMediaPlayback: true,
       ),
     );
-    
+
     _javascriptString = """
       var a = setInterval(function(){
         if (typeof \$crisp !== 'undefined'){
@@ -102,20 +104,14 @@ class _CrispViewState extends State<CrispView> {
         var url = uri.toString();
 
         if (uri?.host != 'go.crisp.chat') {
-          if ([
-            "http",
-            "https",
-            "tel",
-            "mailto",
-            "file",
-            "chrome",
-            "data",
-            "javascript",
-            "about"
-          ].contains(uri?.scheme)) {
+          if (["http", "https", "tel", "mailto", "file", "chrome", "data", "javascript", "about"]
+              .contains(uri?.scheme)) {
             if (await canLaunch(url)) {
-              await launch(url);
-
+              if (widget.onLinkPressed != null)
+                widget.onLinkPressed!(url);
+              else {
+                await launch(url);
+              }
               return NavigationActionPolicy.CANCEL;
             }
           }

@@ -40,45 +40,37 @@ class CrispMain {
           user.verificationCode! +
           "\"]])");
     else
-      appendScript("window.\$crisp.push([\"set\", \"user:email\", [\"" +
-          user.email +
-          "\"]])");
+      appendScript("window.\$crisp.push([\"set\", \"user:email\", [\"" + user.email + "\"]])");
 
     if (user.nickname != null)
-      appendScript("window.\$crisp.push([\"set\", \"user:nickname\", [\"" +
-          user.nickname! +
-          "\"]])");
+      appendScript("window.\$crisp.push([\"set\", \"user:nickname\", [\"" + user.nickname! + "\"]])");
 
     if (user.avatar != null)
-      appendScript("window.\$crisp.push([\"set\", \"user:avatar\", [\"" +
-          user.avatar! +
-          "\"]])");
+      appendScript("window.\$crisp.push([\"set\", \"user:avatar\", [\"" + user.avatar! + "\"]])");
 
-    if (user.phone != null)
-      appendScript("window.\$crisp.push([\"set\", \"user:phone\", [\"" +
-          user.phone! +
-          "\"]])");
+    if (user.phone != null) appendScript("window.\$crisp.push([\"set\", \"user:phone\", [\"" + user.phone! + "\"]])");
 
     this.user = user;
   }
 
   setMessage(String text) {
-    appendScript(
-        "window.\$crisp.push([\"set\", \"message:text\", [\"$text\"]])");
+    appendScript("window.\$crisp.push([\"set\", \"message:text\", [\"$text\"]])");
   }
 
   setSegments(List<String> segments) {
     if (segments.isEmpty) return;
 
-    segments.forEach((value) => appendScript(
-        'window.\$crisp.push(["set", "session:segments", [["$value"]]]);'));
+    segments.forEach(
+      (value) => appendScript('window.\$crisp.push(["set", "session:segments", [["$value"]]]);'),
+    );
   }
 
   setSessionData(Map<String, String> sessionData) {
     if (sessionData.isEmpty) return;
 
-    sessionData.forEach((key, value) => appendScript(
-        'window.\$crisp.push(["set", "session:data", ["$key", "$value"]]);'));
+    sessionData.forEach(
+      (key, value) => appendScript('window.\$crisp.push(["set", "session:data", ["$key", "$value"]]);'),
+    );
   }
 
   void appendScript(String script) {
