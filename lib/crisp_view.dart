@@ -104,8 +104,17 @@ class _CrispViewState extends State<CrispView> {
         var url = uri.toString();
 
         if (uri?.host != 'go.crisp.chat') {
-          if (["http", "https", "tel", "mailto", "file", "chrome", "data", "javascript", "about"]
-              .contains(uri?.scheme)) {
+          if ([
+            "http",
+            "https",
+            "tel",
+            "mailto",
+            "file",
+            "chrome",
+            "data",
+            "javascript",
+            "about"
+          ].contains(uri?.scheme)) {
             if (await canLaunch(url)) {
               if (widget.onLinkPressed != null)
                 widget.onLinkPressed!(url);

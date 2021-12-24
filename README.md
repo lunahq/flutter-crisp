@@ -105,7 +105,7 @@ Then use with:
 
 ## Additional parameters
 
-You can set a chat user token via `userToken`
+Chat user token with `userToken`
 
 ```dart
 crispMain.initialize(
@@ -115,7 +115,7 @@ crispMain.initialize(
 );
 ```
 
-You can set a verification token via `verificationCode` More details on [User Verification](https://help.crisp.chat/en/article/how-to-verify-user-identity-with-cryptographic-email-signatures-166sl01/)
+Verification token with `verificationCode` ([User Verification](https://help.crisp.chat/en/article/how-to-verify-user-identity-with-cryptographic-email-signatures-166sl01/))
 
 ```dart
 crispMain.register(
@@ -129,11 +129,26 @@ crispMain.register(
 );
 ```
 
-You can set user custom data via `setSessionData` more detail on [Set custom data](https://help.crisp.chat/en/article/how-can-i-automatically-set-custom-data-1xh7pqk/)
+Custom data via `setSessionData` ([Set custom data](https://help.crisp.chat/en/article/how-can-i-automatically-set-custom-data-1xh7pqk/))
 
-```
+```dart
 crispMain.setSessionData({
   "order_id": "111",
   "app_version": "0.1.1",
 });
+```
+
+Custom `onLinkPressed` event
+
+```dart
+CrispView(
+  crispMain: crispMain,
+  clearCache: true,
+  onLinkPressed: (url) {
+    if (url.contains('example.com')) {
+      loadDeeplinkWithUrl(url: url);
+    } else
+      launch(url);
+  },
+),
 ```

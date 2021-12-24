@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Add `onLinkPressed` custom event.
+
 ## 0.2.1
 
 - Add clear cache option;
