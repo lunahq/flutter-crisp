@@ -30,6 +30,10 @@ class CrispView extends StatefulWidget {
   final bool clearCache;
   final void Function(String url)? onLinkPressed;
 
+  ///Set to true to make the background of the WebView transparent. 
+  ///If your app has a dark theme, 
+  ///this can prevent a white flash on initialization. The default value is false.
+  final bool transparentBackground;
   @override
   _CrispViewState createState() => _CrispViewState();
 
@@ -37,6 +41,7 @@ class CrispView extends StatefulWidget {
     required this.crispMain,
     this.clearCache = false,
     this.onLinkPressed,
+    this.transparentBackground = false,
   });
 }
 
@@ -51,6 +56,7 @@ class _CrispViewState extends State<CrispView> {
     super.initState();
     _options = InAppWebViewGroupOptions(
       crossPlatform: InAppWebViewOptions(
+        transparentBackground: widget.transparentBackground,
         clearCache: widget.clearCache,
         useShouldOverrideUrlLoading: true,
         mediaPlaybackRequiresUserGesture: false,
