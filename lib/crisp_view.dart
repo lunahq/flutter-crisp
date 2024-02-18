@@ -110,11 +110,13 @@ class _CrispViewState extends State<CrispView> {
           ),
         ),
       initialUrlRequest: URLRequest(
-        url: Uri.parse(_crispEmbedUrl(
-          websiteId: widget.crispMain.websiteId,
-          locale: widget.crispMain.locale,
-          userToken: widget.crispMain.userToken,
-        )),
+        url: WebUri(
+          _crispEmbedUrl(
+            websiteId: widget.crispMain.websiteId,
+            locale: widget.crispMain.locale,
+            userToken: widget.crispMain.userToken,
+          ),
+        ),
       ),
       initialOptions: _options,
       onWebViewCreated: (InAppWebViewController controller) {
