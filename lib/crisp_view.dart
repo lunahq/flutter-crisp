@@ -30,10 +30,16 @@ class CrispView extends StatefulWidget {
   final bool clearCache;
   final void Function(String url)? onLinkPressed;
 
-  ///Set to true to make the background of the WebView transparent. 
-  ///If your app has a dark theme, 
+  ///Set to true to make the background of the WebView transparent.
+  ///If your app has a dark theme,
   ///this can prevent a white flash on initialization. The default value is false.
   final bool transparentBackground;
+
+  ///  A callback that is called when the session id is received.
+  ///  This is useful for tracking the user's session.
+  ///  The session id is a unique identifier for the user's session.
+  final void Function(String sessionId)? onSessionIdReceived;
+
   @override
   _CrispViewState createState() => _CrispViewState();
 
@@ -42,6 +48,7 @@ class CrispView extends StatefulWidget {
     this.clearCache = false,
     this.onLinkPressed,
     this.transparentBackground = false,
+    this.onSessionIdReceived,
   });
 }
 
@@ -82,6 +89,17 @@ class _CrispViewState extends State<CrispView> {
     widget.crispMain.commands.clear();
   }
 
+  void getSessionId() async {
+    await Future.delayed(const Duration(seconds: 3));
+    String? sessionId = await _webViewController?.evaluateJavascript(
+        source: 'window.\$crisp.get("session:identifier")');
+    if (sessionId != null && widget.onSessionIdReceived != null) {
+      widget.onSessionIdReceived!(sessionId);
+      return;
+    }
+    if (sessionId == null) getSessionId();
+  }
+
   @override
   Widget build(BuildContext context) {
     return InAppWebView(
@@ -104,6 +122,7 @@ class _CrispViewState extends State<CrispView> {
       },
       onLoadStop: (InAppWebViewController controller, Uri? url) async {
         _webViewController?.evaluateJavascript(source: _javascriptString!);
+        getSessionId();
       },
       shouldOverrideUrlLoading: (controller, navigationAction) async {
         var uri = navigationAction.request.url;

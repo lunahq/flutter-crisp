@@ -47,10 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
         nickname: "Amir Jabbari",
       ),
     );
-
-    crispMain.setMessage("Amir");
-    // crispMain.appendScript("console.log(\$crisp.get('session:identifier'))");
-    // crispMain.appendScript("console.log(\$crisp.get())");
   }
 
   @override
@@ -64,10 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: CrispView(
           crispMain: crispMain,
           clearCache: true,
-          // onSessionIdReceived: (sessionId) {
-          //   print('------------- sessionIdCrisp  --------------');
-          //   print(sessionId);
-          // },
+          onSessionIdReceived: (sessionId) {
+            print('------------- sessionIdCrisp  --------------');
+            print(sessionId);
+          },
         ),
       ),
     );
